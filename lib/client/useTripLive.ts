@@ -4,13 +4,12 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { TripView } from "@/lib/types";
 
-// Only the two NEXT_PUBLIC_ values ever reach the browser.
+// Only the public URL + anon/publishable key ever reach the browser; the
+// server hands them over in the trip view.
 let browserClient: SupabaseClient | null = null;
-function getBrowserSupabase(): SupabaseClient | null {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !key) return null;
-  return (browserClient ??= createClient(url, key, { auth: { persistSession: false } }));
+function getBrowserSupabase(cfg: TripView["realtime"]): SupabaseClient | null {
+  if (!cfg?.url || !cfg.anonKey) return null;
+  return (browserClient ??= createClient(cfg.url, cfg.anonKey, { auth: { persistSession: false } }));
 }
 
 /**
@@ -48,7 +47,7 @@ export function useTripLive(slug: string, initial: TripView) {
   // Realtime
   useEffect(() => {
     if (view.live !== "realtime") return;
-    const sb = getBrowserSupabase();
+    const sb = getBrowserSupabase(initial.realtime);
     if (!sb) return;
     let timer: ReturnType<typeof setTimeout> | undefined;
     const soon = () => {
@@ -66,7 +65,7 @@ export function useTripLive(slug: string, initial: TripView) {
       clearTimeout(timer);
       sb.removeChannel(channel);
     };
-  }, [view.live, tripId, refresh]);
+  }, [view.live, tripId, refresh, initial.realtime]);
 
   // Phones background the tab when you switch to WhatsApp; catch up on return.
   useEffect(() => {

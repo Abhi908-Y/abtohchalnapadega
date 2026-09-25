@@ -83,4 +83,6 @@ export interface TripView {
   participants: Participant[];
   result: Result | null;
   live: "realtime" | "polling";
+  /** Public Supabase settings for the browser's Realtime connection (only in realtime mode). */
+  realtime?: { url: string; anonKey: string };
 }

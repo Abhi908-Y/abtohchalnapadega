@@ -1,6 +1,6 @@
 import "server-only";
 import { createHash, randomBytes } from "node:crypto";
-import { useRealGemini, useRealSupabase } from "@/lib/env";
+import { env, useRealGemini, useRealSupabase } from "@/lib/env";
 import { geminiSuggester } from "@/lib/ai/gemini";
 import { mockSuggester } from "@/lib/ai/mockSuggester";
 import { createGenerator } from "@/lib/pipeline";
@@ -13,7 +13,9 @@ export async function getTripView(slug: string): Promise<TripView | null> {
   const trip = await store.getTripBySlug(slug);
   if (!trip) return null;
   const [participants, result] = await Promise.all([store.listParticipants(trip.id), store.latestResult(trip.id)]);
-  return { trip, participants, result, live: useRealSupabase ? "realtime" : "polling" };
+  return useRealSupabase
+    ? { trip, participants, result, live: "realtime", realtime: { url: env.supabaseUrl, anonKey: env.supabaseAnonKey } }
+    : { trip, participants, result, live: "polling" };
 }
 
 export const newSlug = () => randomBytes(12).toString("base64url"); // 96 bits: unguessable
