@@ -1,0 +1,118 @@
+@import "tailwindcss";
+
+:root {
+  --cream: #fff8ee;
+  --paper: #ffffff;
+  --ink: #2b1b12;
+  --muted: #7a6a5e;
+  --line: #f0e2cf;
+  --saffron: #ff7a1a;
+  --saffron-deep: #e2600a;
+  --marigold: #ffc233;
+  --teal: #0e9f8e;
+  --berry: #e0457b;
+  --fit-high: #16a34a;
+  --fit-mid: #f59e0b;
+  --fit-low: #e11d48;
+  --whatsapp: #25d366;
+}
+
+@theme inline {
+  --color-cream: var(--cream);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-saffron: var(--saffron);
+  --color-saffron-deep: var(--saffron-deep);
+  --color-marigold: var(--marigold);
+  --color-teal: var(--teal);
+  --color-berry: var(--berry);
+  --color-fit-high: var(--fit-high);
+  --color-fit-mid: var(--fit-mid);
+  --color-fit-low: var(--fit-low);
+  --color-whatsapp: var(--whatsapp);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-baloo);
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* A little festive bunting under the header */
+.bunting {
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--saffron) 0 18px,
+    var(--marigold) 18px 36px,
+    var(--teal) 36px 54px,
+    var(--berry) 54px 72px
+  );
+  height: 5px;
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.pop-in {
+  animation: pop-in 0.35s ease-out both;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+.shimmer {
+  background: linear-gradient(90deg, #fff1dc 0%, #ffe0b8 50%, #fff1dc 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pop-in,
+  .shimmer {
+    animation: none;
+  }
+}
+
+/* Range sliders in brand colour */
+input[type="range"] {
+  accent-color: var(--saffron);
+}
+
+/* "What changed" note glows briefly each time a new result lands */
+@keyframes flash-note {
+  0%,
+  40% {
+    background-color: color-mix(in srgb, var(--teal) 22%, white);
+  }
+  100% {
+    background-color: var(--paper);
+  }
+}
+.flash-note {
+  animation: flash-note 3.5s ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .flash-note {
+    animation: none;
+  }
+}
