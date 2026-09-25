@@ -14,12 +14,18 @@ export async function POST(req: Request) {
     .slice(0, 24);
   const slug = `${readable ? `${readable}-` : ""}${newSlug()}`;
 
-  const trip = await store.createTrip({
-    slug,
-    name,
-    coordinator_name: coordinatorName,
-    window_start: windowStart,
-    window_end: windowEnd,
-  });
-  return Response.json({ slug: trip.slug }, { status: 201 });
+  try {
+    const trip = await store.createTrip({
+      slug,
+      name,
+      coordinator_name: coordinatorName,
+      window_start: windowStart,
+      window_end: windowEnd,
+    });
+    return Response.json({ slug: trip.slug }, { status: 201 });
+  } catch (e) {
+    console.error("[create trip]", e);
+    // Shown in the form, so a missing-keys setup problem is obvious.
+    return Response.json({ error: e instanceof Error ? e.message : "Couldn't create the trip" }, { status: 500 });
+  }
 }
